@@ -10,6 +10,7 @@ import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 import model.MySQL;
 
@@ -21,6 +22,8 @@ public class Invoice extends javax.swing.JFrame {
 
     private User user;
     private CoustomerBean coustomerBean = new CoustomerBean();
+    
+    
 
     public void setUserData(User user) {
         this.user = user;
@@ -34,8 +37,36 @@ public class Invoice extends javax.swing.JFrame {
      */
     public Invoice() {
         initComponents();
+        loadPaymentMethod();
 
     }
+    
+    
+   public void loadPaymentMethod(){
+       try {
+       
+           ResultSet resultset = MySQL.search("SELECT * FROM `payment_method` ORDER BY `name` ASC");
+           
+           DefaultComboBoxModel model = (DefaultComboBoxModel) jComboBox1.getModel();
+           model.removeAllElements();
+           
+           Vector v = new Vector();
+           v.add("Select");
+           
+           while(resultset.next()){
+               v.add(resultset.getString("name"));
+               
+           }
+           
+           model.addAll(v);
+           jComboBox1.setSelectedIndex(0);
+           
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+       
+       
+   }
 
     /**
      * This method is called from within the constructor to initialize the form.
